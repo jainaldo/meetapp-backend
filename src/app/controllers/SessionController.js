@@ -1,7 +1,7 @@
-import jwt from "jsonwebtoken";
-import * as Yup from "yup";
-import User from "../models/User";
-import authCondig from "../../config/auth";
+import jwt from 'jsonwebtoken';
+import * as Yup from 'yup';
+import User from '../models/User';
+import authCondig from '../../config/auth';
 
 class SessionController {
   async store(req, res) {
@@ -9,11 +9,11 @@ class SessionController {
       email: Yup.string()
         .email()
         .required(),
-      password: Yup.string().required()
+      password: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: "Validation fails" });
+      return res.status(400).json({ error: 'Validation fails' });
     }
 
     const { email, password } = req.body;
@@ -21,11 +21,11 @@ class SessionController {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      return res.status(400).json({ error: "User not found" });
+      return res.status(400).json({ error: 'User not found' });
     }
 
     if (!(await user.checkPassword(password))) {
-      return res.status(400).json({ error: "Password does not match" });
+      return res.status(400).json({ error: 'Password does not match' });
     }
 
     const { id, name } = user;
@@ -34,11 +34,11 @@ class SessionController {
       user: {
         id,
         name,
-        email
+        email,
       },
       token: jwt.sign({ id }, authCondig.secret, {
-        expiresIn: authCondig.expiresIn
-      })
+        expiresIn: authCondig.expiresIn,
+      }),
     });
   }
 }

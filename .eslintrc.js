@@ -4,10 +4,10 @@ module.exports = {
     node: true,
   },
   extends: [
-    'airbnb-base',
-    'prettier'
+    "airbnb-base",
+    "prettier"
   ],
-  plugins:['prettier'],
+  plugins:["prettier"],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
