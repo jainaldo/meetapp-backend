@@ -2,7 +2,6 @@ import {
   startOfHour,
   parseISO,
   isBefore,
-  isAfter,
   endOfDay,
   startOfDay,
 } from 'date-fns';
