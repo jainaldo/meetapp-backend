@@ -66,10 +66,20 @@ class SubscriptionController {
       user_id: user.id,
     });
 
+    const countParticipants = await Subscription.count({
+      where: { meetup_id: meetup.id },
+    });
+
     await Mail.sendMail({
       to: `${meetup.organizer.name} <${meetup.organizer.email}>`,
-      subject: 'Inscrição realizada',
-      text: `Você tem um nova inscrição no meetup ${meetup.title}`,
+      subject: 'Nova inscrição realizada',
+      template: 'subscription',
+      context: {
+        organizer: meetup.organizer.name,
+        user: user.name,
+        meetup: meetup.title,
+        total: countParticipants,
+      },
     });
 
     return res.json(subscription);
