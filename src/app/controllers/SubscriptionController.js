@@ -1,7 +1,8 @@
 import Meetup from '../models/Meetup';
 import User from '../models/User';
 import Subscription from '../models/Subscription';
-import Mail from '../../lib/Mail';
+import Queue from '../../lib/Queue';
+import SubscriptionMail from '../jobs/SubscriptionMail';
 
 class SubscriptionController {
   async store(req, res) {
@@ -70,16 +71,10 @@ class SubscriptionController {
       where: { meetup_id: meetup.id },
     });
 
-    await Mail.sendMail({
-      to: `${meetup.organizer.name} <${meetup.organizer.email}>`,
-      subject: 'Nova inscrição realizada',
-      template: 'subscription',
-      context: {
-        organizer: meetup.organizer.name,
-        user: user.name,
-        meetup: meetup.title,
-        total: countParticipants,
-      },
+    await Queue.add(SubscriptionMail.key, {
+      meetup,
+      user,
+      countParticipants,
     });
 
     return res.json(subscription);
